@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import gsitm.appLogCollector.CommonConstants;
 import gsitm.appLogCollector.service.LogWriteService;
 
 @Controller
@@ -18,7 +19,7 @@ public class NormalRequestReceiver {
 	
 	@RequestMapping(value = "/normal/collector", method = { RequestMethod.GET, RequestMethod.POST })
 	public void receiver(@RequestParam HashMap<String, String> requestData) {
-		logWriteService.logWrite(requestData);
+		logWriteService.logWrite(CommonConstants.DATA_TYPE_NORMAL, requestData);
 	}
 
 }
