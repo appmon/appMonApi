@@ -11,6 +11,7 @@ import java.util.Locale;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import gsitm.appLogCollector.CommonConstants;
 
@@ -24,7 +25,7 @@ public class LogWriteServiceImpl implements LogWriteService {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd", Locale.KOREA);
 			String date = sdf.format(new Date());
 			
-			PrintWriter pw = new PrintWriter(new FileWriter(CommonConstants.LOG_PATH + date + ".txt", true));
+			PrintWriter pw = new PrintWriter(new FileWriter("C:\\Users\\admin\\Documents\\testLog\\" + date + ".txt", true));
 			pw.write(msg.toString());
 			pw.write("\n");
 			pw.close();
@@ -41,18 +42,23 @@ public class LogWriteServiceImpl implements LogWriteService {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd", Locale.KOREA);
 			String date = sdf.format(new Date());
 			String appGubun = "";
-			
-			if(CommonConstants.DATA_TYPE_JSON.equals(dataType)) {
-				JSONObject obj = new JSONObject(msg);
-				appGubun = obj.get("app_gubun").toString();
-			} else if (CommonConstants.DATA_TYPE_NORMAL.equals(dataType)) {
-				HashMap<String, String> map = (HashMap<String, String>)data;
-				appGubun = map.get("app_gubun");
-			} else if (CommonConstants.DATA_TYPE_XML.equals(dataType)) {
-				// 미구현
-			}
 
-			if("".equals(appGubun)) {
+			try {
+				if(CommonConstants.DATA_TYPE_JSON.equals(dataType)) {
+					JSONObject obj = new JSONObject(msg);
+					appGubun = obj.has("app_gubun") ? "" : obj.get("app_gubun").toString();
+				} else if (CommonConstants.DATA_TYPE_NORMAL.equals(dataType)) {
+					HashMap<String, String> map = (HashMap<String, String>)data;
+					appGubun = map.get("app_gubun") != null ? map.get("app_gubun") : "";
+				} else if (CommonConstants.DATA_TYPE_XML.equals(dataType)) {
+					// 미구현
+				}
+			} catch(Exception e) {
+				System.out.println("###ERROR:ABOUT parsing app_gubun: " + e.toString());
+				appGubun = "";
+			}
+			
+			if(null == appGubun || "".equals(appGubun)) {
 				logWrite(data);
 			} else {
 				String filePath = CommonConstants.LOG_PATH + appGubun + "/";
