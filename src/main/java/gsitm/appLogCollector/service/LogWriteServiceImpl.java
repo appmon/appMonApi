@@ -11,7 +11,6 @@ import java.util.Locale;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import gsitm.appLogCollector.CommonConstants;
 
@@ -25,7 +24,7 @@ public class LogWriteServiceImpl implements LogWriteService {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd", Locale.KOREA);
 			String date = sdf.format(new Date());
 			
-			PrintWriter pw = new PrintWriter(new FileWriter("C:\\Users\\admin\\Documents\\testLog\\" + date + ".txt", true));
+			PrintWriter pw = new PrintWriter(new FileWriter(CommonConstants.LOG_PATH + date + ".txt", true));
 			pw.write(msg.toString());
 			pw.write("\n");
 			pw.close();
