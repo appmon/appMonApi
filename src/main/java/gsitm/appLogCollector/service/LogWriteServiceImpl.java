@@ -33,7 +33,6 @@ public class LogWriteServiceImpl implements LogWriteService {
 		}
 	}
 	
-	
 	public void logWrite(String dataType, Object data) {
 		try {
 			ObjectMapper mapper = new ObjectMapper();
@@ -45,7 +44,7 @@ public class LogWriteServiceImpl implements LogWriteService {
 			try {
 				if(CommonConstants.DATA_TYPE_JSON.equals(dataType)) {
 					JSONObject obj = new JSONObject(msg);
-					appGubun = obj.has("app_gubun") ? "" : obj.get("app_gubun").toString();
+					appGubun = obj.has("app_gubun") ? obj.get("app_gubun").toString() :  "";
 				} else if (CommonConstants.DATA_TYPE_NORMAL.equals(dataType)) {
 					HashMap<String, String> map = (HashMap<String, String>)data;
 					appGubun = map.get("app_gubun") != null ? map.get("app_gubun") : "";
@@ -62,10 +61,17 @@ public class LogWriteServiceImpl implements LogWriteService {
 			} else {
 				String filePath = CommonConstants.LOG_PATH + appGubun + "/";
 				//String filePath = "C:\\Users\\admin\\Documents\\testLog\\" + appGubun + "\\"; 	// local
-	
+				
+				System.out.println("## Path: " + filePath);
+				
 				File f = new File(filePath);
-				if (!f.isDirectory()) {
+				if (!f.exists()) {
 					f.mkdirs();
+					
+					Runtime.getRuntime().exec("chmod 777 " + filePath);
+					f.setExecutable(true, false);
+					f.setReadable(true, false);
+					f.setWritable(true, false);
 				}
 				
 				PrintWriter pw = new PrintWriter(new FileWriter(filePath + appGubun + "_" + date + ".txt", true));
@@ -74,6 +80,7 @@ public class LogWriteServiceImpl implements LogWriteService {
 				pw.close();
 			}
 		} catch (Exception e) {
+			System.out.println(e.toString());
 			e.printStackTrace();
 		}
 	}
