@@ -64,11 +64,6 @@ public class LogWriteServiceImpl implements LogWriteService {
 			} else {
 				// test mkdirs
 				if("".equals(tGbn)) {
-					PrintWriter pw = new PrintWriter(new FileWriter(CommonConstants.LOG_PATH  + appGubun + "_" + date + ".txt", true));
-					pw.write(msg.toString());
-					pw.write("\n");
-					pw.close();
-				} else {
 					String filePath = CommonConstants.LOG_PATH + appGubun + "/";
 					//String filePath = "C:\\Users\\admin\\Documents\\testLog\\" + appGubun + "\\"; 	// local
 					
@@ -78,13 +73,18 @@ public class LogWriteServiceImpl implements LogWriteService {
 					if (!f.exists()) {
 						f.mkdirs();
 						
-						Runtime.getRuntime().exec("chmod 777 " + filePath);
+						/*Runtime.getRuntime().exec("chmod 777 " + filePath);
 						f.setExecutable(true, false);
 						f.setReadable(true, false);
-						f.setWritable(true, false);
+						f.setWritable(true, false);*/
 					}
 					
 					PrintWriter pw = new PrintWriter(new FileWriter(filePath + appGubun + "_" + date + ".txt", true));
+					pw.write(msg.toString());
+					pw.write("\n");
+					pw.close();
+				} else {
+					PrintWriter pw = new PrintWriter(new FileWriter(CommonConstants.LOG_PATH  + appGubun + "_" + date + ".txt", true));
 					pw.write(msg.toString());
 					pw.write("\n");
 					pw.close();
