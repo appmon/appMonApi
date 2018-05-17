@@ -78,7 +78,7 @@ public class LogWriteServiceImpl implements LogWriteService {
 					if (!f.exists()) {
 						f.mkdirs();
 						
-						//Runtime.getRuntime().exec("chmod 777 " + filePath);
+						Runtime.getRuntime().exec("chmod 777 " + filePath);
 						f.setExecutable(true, false);
 						f.setReadable(true, false);
 						f.setWritable(true, false);
