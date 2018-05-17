@@ -40,14 +40,17 @@ public class LogWriteServiceImpl implements LogWriteService {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd", Locale.KOREA);
 			String date = sdf.format(new Date());
 			String appGubun = "";
+			String tGbn = "";	//test
 
 			try {
 				if(CommonConstants.DATA_TYPE_JSON.equals(dataType)) {
 					JSONObject obj = new JSONObject(msg);
 					appGubun = obj.has("app_gubun") ? obj.get("app_gubun").toString() :  "";
+					tGbn = obj.has("tGbn") ? obj.get("tGbn").toString() :  ""; //test
 				} else if (CommonConstants.DATA_TYPE_NORMAL.equals(dataType)) {
 					HashMap<String, String> map = (HashMap<String, String>)data;
 					appGubun = map.get("app_gubun") != null ? map.get("app_gubun") : "";
+					tGbn = map.get("tGbn") != null ? map.get("tGbn") : ""; //test
 				} else if (CommonConstants.DATA_TYPE_XML.equals(dataType)) {
 					// 미구현
 				}
@@ -59,25 +62,33 @@ public class LogWriteServiceImpl implements LogWriteService {
 			if(null == appGubun || "".equals(appGubun)) {
 				logWrite(data);
 			} else {
-				String filePath = CommonConstants.LOG_PATH + appGubun + "/";
-				//String filePath = "C:\\Users\\admin\\Documents\\testLog\\" + appGubun + "\\"; 	// local
-				
-				System.out.println("## Path: " + filePath);
-				
-				File f = new File(filePath);
-				if (!f.exists()) {
-					f.mkdirs();
+				// test mkdirs
+				if("".equals(tGbn)) {
+					PrintWriter pw = new PrintWriter(new FileWriter(CommonConstants.LOG_PATH  + appGubun + "_" + date + ".txt", true));
+					pw.write(msg.toString());
+					pw.write("\n");
+					pw.close();
+				} else {
+					String filePath = CommonConstants.LOG_PATH + appGubun + "/";
+					//String filePath = "C:\\Users\\admin\\Documents\\testLog\\" + appGubun + "\\"; 	// local
 					
-					Runtime.getRuntime().exec("chmod 777 " + filePath);
-					f.setExecutable(true, false);
-					f.setReadable(true, false);
-					f.setWritable(true, false);
+					System.out.println("## Path: " + filePath); //test
+					
+					File f = new File(filePath);
+					if (!f.exists()) {
+						f.mkdirs();
+						
+						//Runtime.getRuntime().exec("chmod 777 " + filePath);
+						f.setExecutable(true, false);
+						f.setReadable(true, false);
+						f.setWritable(true, false);
+					}
+					
+					PrintWriter pw = new PrintWriter(new FileWriter(filePath + appGubun + "_" + date + ".txt", true));
+					pw.write(msg.toString());
+					pw.write("\n");
+					pw.close();
 				}
-				
-				PrintWriter pw = new PrintWriter(new FileWriter(filePath + appGubun + "_" + date + ".txt", true));
-				pw.write(msg.toString());
-				pw.write("\n");
-				pw.close();
 			}
 		} catch (Exception e) {
 			System.out.println(e.toString());
