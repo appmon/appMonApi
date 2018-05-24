@@ -26,17 +26,24 @@ public class LogWriteServiceImpl implements LogWriteService {
 
 			try {
 				HashMap<String, String> map = (HashMap<String, String>)data;
-				appGubun = map.get("app_gubun") != null ? map.get("app_gubun") : "";
+				if(map.containsKey("app_gubun")) {
+					appGubun = map.get("app_gubun") != null ? map.get("app_gubun") : "";
+				}
 			} catch(Exception e) {
 				System.out.println("###ERROR:ABOUT parsing app_gubun: " + e.toString());
 				appGubun = "";
 			}
 			
 			if(null == appGubun || "".equals(appGubun)) {
-				logWrite(data);
+				PrintWriter pw = new PrintWriter(new FileWriter(CommonConstants.LOG_PATH + date + ".txt", true));
+				pw.write(msg.toString());
+				pw.write("\n");
+				pw.close();
 			} else {
 				String filePath = CommonConstants.LOG_PATH + appGubun + "/";
 				//String filePath = "C:\\Users\\admin\\Documents\\testLog\\" + appGubun + "\\"; 	// local
+				
+				System.out.println("###INFO:: filePath: " + filePath);
 				
 				File f = new File(filePath);
 				if (!f.exists()) {
