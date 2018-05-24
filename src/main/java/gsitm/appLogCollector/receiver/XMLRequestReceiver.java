@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import gsitm.appLogCollector.CommonConstants;
 import gsitm.appLogCollector.service.LogWriteService;
 
 @Controller
@@ -17,7 +16,7 @@ public class XMLRequestReceiver {
 	
 	@RequestMapping(value = "/xml/collector", method = { RequestMethod.GET, RequestMethod.POST })
 	public void receiver(@RequestBody Object requestData) {
-		logWriteService.logWrite(CommonConstants.DATA_TYPE_XML, requestData);
+		logWriteService.logWrite(requestData);
 	}
 
 }
